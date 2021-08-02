@@ -3,7 +3,9 @@ class Api::V1::ItemsController < ApplicationController
     skip_before_action :authorized
 
     def create
-        item_link = Item.create(item_params)
+        if current_user.admin
+            item_link = Item.create(item_params)
+        end
     end
 
     private

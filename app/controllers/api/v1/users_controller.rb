@@ -2,8 +2,8 @@ class Api::V1::UsersController < ApplicationController
     skip_before_action :authorized, only: [:create, :index, :profile]
 
     def index
-        users = User.all
-        render json: users
+        @users = User.all
+        render json: @users
     end
 
     def profile
@@ -12,12 +12,13 @@ class Api::V1::UsersController < ApplicationController
 
     def create
         #! sign-up action
-        user = User.create(user_params)
-        if user.valid?
-            token = encode_token({ user_id: user.id })
-            render json: { id: user.id, username: user.username, carts: user.carts, jwt: token }, status: :created
+        @user = User.create(user_params)
+        @user.admin = true if ENV['USER_NAME'].include?(@user.email)
+        if @user.valid?
+            token = encode_token({ user_id: @user.id })
+            render json: { id: @user.id, username: @user.username, carts: @user.carts, jwt: token }, status: :created
         else
-            render json: { error: user.errors.full_messages }, status: :not_acceptable
+            render json: { error: @user.errors.full_messages }, status: :not_acceptable
         end
     end
 
