@@ -8,6 +8,11 @@ class Api::V1::ItemsController < ApplicationController
         end
     end
 
+    def index
+        @items = Item.all
+        render json: @items
+    end
+
     private
 
     def item_params
