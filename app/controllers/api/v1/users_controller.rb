@@ -1,4 +1,5 @@
 class Api::V1::UsersController < ApplicationController
+    include ActionController::MimeResponds
     skip_before_action :authorized, only: [:create, :index, :profile]
 
     def index
@@ -13,7 +14,7 @@ class Api::V1::UsersController < ApplicationController
     def create
         #! sign-up action
         @user = User.create(user_params)
-        @user.admin = true if ENV['USERNAME'].include?(@user.email)
+        @user.admin = true if "fnatwijuka@gmail.com".include?(@user.email_address)
         if @user.valid?
             token = encode_token({ user_id: @user.id })
             render json: { id: @user.id, username: @user.username, carts: @user.carts, jwt: token }, status: :created
